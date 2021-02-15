@@ -8,12 +8,29 @@ import (
 	"net/http"
 )
 
-func getBranchesList(token, owner, repo string) (branches []string, err error) {
+func getBranchesAndTagsList(token, owner, repo string) (list []string, err error) {
+	branches, err := getBranchesList(token, owner, repo, false)
+	if err != nil {
+		return nil, err
+	}
+	tags, err := getBranchesList(token, owner, repo, true)
+	if err != nil {
+		return nil, err
+	}
+	branches = append(branches, tags...)
+	return branches, nil
+}
+
+func getBranchesList(token, owner, repo string, tags bool) (branches []string, err error) {
 	req := &fasthttp.Request{}
 	res := &fasthttp.Response{}
 	req.Header.SetMethod(http.MethodGet)
-	req.SetRequestURI(fmt.Sprintf("https://git:%s@api.github.com/repos/%s/%s/branches",
-		token, owner, repo))
+	t := "branches"
+	if tags {
+		t = "tags"
+	}
+	req.SetRequestURI(fmt.Sprintf("https://git:%s@api.github.com/repos/%s/%s/%s",
+		token, owner, repo, t))
 	err = fasthttp.Do(req, res)
 	if err != nil {
 		return nil, err

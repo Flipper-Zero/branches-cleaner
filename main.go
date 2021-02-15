@@ -27,7 +27,7 @@ func main() {
 }
 
 func checkBranches() {
-	br, err := getBranchesList(cfg.GithubToken, cfg.RepoOwner, cfg.RepoName)
+	br, err := getBranchesAndTagsList(cfg.GithubToken, cfg.RepoOwner, cfg.RepoName)
 	if err != nil {
 		log.Println("Can't get branches list from GitHub:", err)
 		return
