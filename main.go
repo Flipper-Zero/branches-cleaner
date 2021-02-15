@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/caarlos0/env/v6"
+	"github.com/robfig/cron/v3"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 var cfg config
@@ -20,10 +20,12 @@ func main() {
 		log.Fatalln(cfg.BranchesPath, "is not an existing directory")
 	}
 
-	for {
-		checkBranches()
-		time.Sleep(cfg.Delay)
-	}
+	c := cron.New()
+	c.AddFunc(cfg.Cron, checkBranches)
+	c.Start()
+	log.Println("First run:", c.Entries()[0].Next)
+
+	select {}
 }
 
 func checkBranches() {
