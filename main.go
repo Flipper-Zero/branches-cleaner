@@ -48,6 +48,9 @@ func checkBranches() {
 		if arrayContains(br, c.Name()) {
 			continue
 		}
+		if arrayContains(cfg.Excluded, c.Name()) {
+			continue
+		}
 		log.Println("Deleting", c.Name())
 		err = os.RemoveAll(filepath.Join(cfg.BranchesPath, c.Name()))
 		if err != nil {
