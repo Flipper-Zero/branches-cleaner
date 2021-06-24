@@ -29,7 +29,7 @@ func getBranchesList(token, owner, repo string, tags bool) (branches []string, e
 	if tags {
 		t = "tags"
 	}
-	req.SetRequestURI(fmt.Sprintf("https://git:%s@api.github.com/repos/%s/%s/%s",
+	req.SetRequestURI(fmt.Sprintf("https://git:%s@api.github.com/repos/%s/%s/%s?per_page=100",
 		token, owner, repo, t))
 	err = fasthttp.Do(req, res)
 	if err != nil {
